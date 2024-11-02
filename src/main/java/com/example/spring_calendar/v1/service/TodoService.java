@@ -5,4 +5,6 @@ import com.example.spring_calendar.v1.dto.TodoResponseDto;
 
 public interface TodoService {
     TodoResponseDto saveTodo(TodoRequestDto dto);
+
+    TodoResponseDto findTodoById(Long id);
 }

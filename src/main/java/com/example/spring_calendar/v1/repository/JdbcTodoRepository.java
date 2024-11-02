@@ -2,13 +2,19 @@ package com.example.spring_calendar.v1.repository;
 
 import com.example.spring_calendar.v1.dto.TodoResponseDto;
 import com.example.spring_calendar.v1.entity.Todo;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -34,9 +40,31 @@ public class JdbcTodoRepository implements TodoRepository {
         parameters.put("user_id", todo.getUser_id());
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
-        System.out.println(key);
 
-        //  TODO: response 되는 created_at, updated_at 이 DB 자동 생성이라 null 값 들어감 -> 조회 쿼리 만든 후 해결 가능
-        return new TodoResponseDto(key.longValue(), todo.getUser_name(), todo.getTitle(), todo.getContents(), todo.getCreated_at(), todo.getUpdated_at(), todo.getUser_id());
+        return findTodoByIdOrElseThrow(key.longValue());
+    }
+
+    @Override
+    public TodoResponseDto findTodoByIdOrElseThrow(Long id) {
+        List<TodoResponseDto> result = jdbcTemplate.query("select * from todos where id = ?", todoRowMapper(), id);
+
+        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 Todo가 없습니다."));
+    }
+
+    private RowMapper<TodoResponseDto> todoRowMapper() {
+        return new RowMapper<TodoResponseDto>() {
+            @Override
+            public TodoResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new TodoResponseDto(
+                        rs.getLong("id"),
+                        rs.getString("user_name"),
+                        rs.getString("title"),
+                        rs.getString("contents"),
+                        rs.getString("created_at"),
+                        rs.getString("updated_at"),
+                        rs.getLong("user_id")
+                );
+            }
+        };
     }
 }
