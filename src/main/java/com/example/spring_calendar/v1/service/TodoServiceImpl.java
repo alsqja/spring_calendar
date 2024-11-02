@@ -23,6 +23,9 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoResponseDto saveTodo(TodoRequestDto dto) {
+        if (dto.getUserName() == null || dto.getTitle() == null || dto.getPassword() == null || dto.getContents() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "값을 정확하게 입력해주세요.");
+        }
         Todo todo = new Todo(dto);
 
         return todoRepository.saveTodo(todo);
