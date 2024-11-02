@@ -22,4 +22,6 @@ public interface TodoRepository {
     int updateTodo(Long id, String title, String contents, String userName);
 
     boolean checkPassword(Long id, String password);
+
+    int deleteTodo(Long id);
 }

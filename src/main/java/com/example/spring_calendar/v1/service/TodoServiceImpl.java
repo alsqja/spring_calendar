@@ -62,9 +62,18 @@ public class TodoServiceImpl implements TodoService {
                 id,
                 dto.getTitle() == null ? todo.getTitle() : dto.getTitle(),
                 dto.getContents() == null ? todo.getContents() : dto.getContents(),
-                dto.getUser_name() == null ? todo.getUser_name() : dto.getUser_name()
+                dto.getUserName() == null ? todo.getUser_name() : dto.getUserName()
         );
 
         return todoRepository.findTodoByIdOrElseThrow(id);
+    }
+
+    @Override
+    public void deleteTodo(Long id) {
+        int deletedRow = todoRepository.deleteTodo(id);
+
+        if (deletedRow == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 일정입니다.");
+        }
     }
 }

@@ -15,7 +15,7 @@ public class Todo {
     private Long user_id;
 
     public Todo(TodoRequestDto dto) {
-        this.user_name = dto.getUser_name();
+        this.user_name = dto.getUserName();
         this.password = dto.getPassword();
         this.title = dto.getTitle();
         this.contents = dto.getContents();

@@ -13,4 +13,6 @@ public interface TodoService {
     List<TodoResponseDto> findAllTodos(String userName, String updatedAt);
 
     TodoResponseDto updateTodo(Long id, TodoRequestDto dto);
+
+    void deleteTodo(Long id);
 }

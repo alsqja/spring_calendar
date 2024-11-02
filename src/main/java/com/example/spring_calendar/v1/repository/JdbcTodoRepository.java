@@ -84,6 +84,11 @@ public class JdbcTodoRepository implements TodoRepository {
         return todoPassword.get().getPassword().equals(password);
     }
 
+    @Override
+    public int deleteTodo(Long id) {
+        return jdbcTemplate.update("DELETE FROM todos WHERE id = ?", id);
+    }
+
     private RowMapper<TodoResponseDto> todoRowMapper() {
         return new RowMapper<TodoResponseDto>() {
             @Override

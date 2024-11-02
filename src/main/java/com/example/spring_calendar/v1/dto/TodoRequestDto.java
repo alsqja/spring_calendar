@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class TodoRequestDto {
-    private String user_name;
+    private String userName;
     private String password;
     private String title;
     private String contents;
