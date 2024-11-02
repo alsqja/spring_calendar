@@ -4,9 +4,12 @@ import com.example.spring_calendar.v1.dto.TodoRequestDto;
 import com.example.spring_calendar.v1.dto.TodoResponseDto;
 import com.example.spring_calendar.v1.entity.Todo;
 import com.example.spring_calendar.v1.repository.TodoRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 
 @Service
@@ -45,5 +48,24 @@ public class TodoServiceImpl implements TodoService {
             return todoRepository.findAllTodosByUpdatedAt(updatedAt);
         }
         return todoRepository.findAllTodosByUserNameAndUpdatedAt(userName, updatedAt);
+    }
+
+    @Override
+    public TodoResponseDto updateTodo(Long id, TodoRequestDto dto) {
+
+        TodoResponseDto todo = todoRepository.findTodoByIdOrElseThrow(id);
+
+        if (!todoRepository.checkPassword(id, dto.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "잘못된 비밀번호입니다.");
+        }
+
+        todoRepository.updateTodo(
+                id,
+                dto.getTitle() == null ? todo.getTitle() : dto.getTitle(),
+                dto.getContents() == null ? todo.getContents() : dto.getContents(),
+                dto.getUser_name() == null ? todo.getUser_name() : dto.getUser_name()
+        );
+
+        return todoRepository.findTodoByIdOrElseThrow(id);
     }
 }

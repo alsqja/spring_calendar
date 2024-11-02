@@ -11,4 +11,6 @@ public interface TodoService {
     TodoResponseDto findTodoById(Long id);
 
     List<TodoResponseDto> findAllTodos(String userName, String updatedAt);
+
+    TodoResponseDto updateTodo(Long id, TodoRequestDto dto);
 }

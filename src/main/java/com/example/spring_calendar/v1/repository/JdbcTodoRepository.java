@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class JdbcTodoRepository implements TodoRepository {
@@ -53,22 +54,34 @@ public class JdbcTodoRepository implements TodoRepository {
 
     @Override
     public List<TodoResponseDto> findAllTodos() {
-        return jdbcTemplate.query("select * from todos ORDER BY updated_at", todoRowMapper());
+        return jdbcTemplate.query("select * from todos ORDER BY updated_at DESC", todoRowMapper());
     }
 
     @Override
     public List<TodoResponseDto> findAllTodosByUserNameAndUpdatedAt(String userName, String updatedAt) {
-        return jdbcTemplate.query("select * from todos WHERE user_name=? AND updated_at > ? ORDER BY updated_at", todoRowMapper(), userName, updatedAt);
+        return jdbcTemplate.query("select * from todos WHERE user_name=? AND updated_at > ? ORDER BY updated_at DESC", todoRowMapper(), userName, updatedAt);
     }
 
     @Override
     public List<TodoResponseDto> findAllTodosByUserName(String userName) {
-        return jdbcTemplate.query("SELECT * FROM todos WHERE user_name=? ORDER BY updated_at", todoRowMapper(), userName);
+        return jdbcTemplate.query("SELECT * FROM todos WHERE user_name=? ORDER BY updated_at DESC", todoRowMapper(), userName);
     }
 
     @Override
     public List<TodoResponseDto> findAllTodosByUpdatedAt(String updatedAt) {
-        return jdbcTemplate.query("SELECT * FROM todos WHERE updated_at > ? ORDER BY updated_at", todoRowMapper(), updatedAt);
+        return jdbcTemplate.query("SELECT * FROM todos WHERE updated_at > ? ORDER BY updated_at DESC", todoRowMapper(), updatedAt);
+    }
+
+    @Override
+    public int updateTodo(Long id, String title, String contents, String userName) {
+        return jdbcTemplate.update("UPDATE todos SET title = ?, contents = ?, user_name = ? WHERE id = ?", title, contents, userName, id);
+    }
+
+    @Override
+    public boolean checkPassword(Long id, String password) {
+        Optional<Todo> todoPassword = jdbcTemplate.query("SELECT * FROM todos WHERE id = ?", todoRowMapperV2(), id).stream().findAny();
+
+        return todoPassword.get().getPassword().equals(password);
     }
 
     private RowMapper<TodoResponseDto> todoRowMapper() {
@@ -84,6 +97,15 @@ public class JdbcTodoRepository implements TodoRepository {
                         rs.getString("updated_at"),
                         rs.getLong("user_id")
                 );
+            }
+        };
+    }
+
+    private RowMapper<Todo> todoRowMapperV2() {
+        return new RowMapper<Todo>() {
+            @Override
+            public Todo mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Todo(rs.getString("password"));
             }
         };
     }

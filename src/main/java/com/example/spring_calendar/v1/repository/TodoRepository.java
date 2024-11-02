@@ -18,4 +18,8 @@ public interface TodoRepository {
     List<TodoResponseDto> findAllTodosByUserName(String userName);
 
     List<TodoResponseDto> findAllTodosByUpdatedAt(String updatedAt);
+
+    int updateTodo(Long id, String title, String contents, String userName);
+
+    boolean checkPassword(Long id, String password);
 }

@@ -23,4 +23,8 @@ public class Todo {
         //  v1 -> user 가 없어 user_id 하드코딩
         this.user_id = 1L;
     }
+
+    public Todo(String password) {
+        this.password = password;
+    }
 }
