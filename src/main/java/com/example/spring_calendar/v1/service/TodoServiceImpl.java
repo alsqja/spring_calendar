@@ -7,20 +7,18 @@ import com.example.spring_calendar.v1.repository.TodoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.naming.AuthenticationException;
 import java.util.List;
 
 @Service
 public class TodoServiceImpl implements TodoService {
 
     private final TodoRepository todoRepository;
-    private final JdbcTemplate jdbcTemplate;
 
     public TodoServiceImpl(TodoRepository todoRepository, JdbcTemplate jdbcTemplate) {
         this.todoRepository = todoRepository;
-        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -50,6 +48,7 @@ public class TodoServiceImpl implements TodoService {
         return todoRepository.findAllTodosByUserNameAndUpdatedAt(userName, updatedAt);
     }
 
+    @Transactional
     @Override
     public TodoResponseDto updateTodo(Long id, TodoRequestDto dto) {
 
