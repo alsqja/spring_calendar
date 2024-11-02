@@ -51,6 +51,26 @@ public class JdbcTodoRepository implements TodoRepository {
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 Todo가 없습니다."));
     }
 
+    @Override
+    public List<TodoResponseDto> findAllTodos() {
+        return jdbcTemplate.query("select * from todos ORDER BY updated_at", todoRowMapper());
+    }
+
+    @Override
+    public List<TodoResponseDto> findAllTodosByUserNameAndUpdatedAt(String userName, String updatedAt) {
+        return jdbcTemplate.query("select * from todos WHERE user_name=? AND updated_at > ? ORDER BY updated_at", todoRowMapper(), userName, updatedAt);
+    }
+
+    @Override
+    public List<TodoResponseDto> findAllTodosByUserName(String userName) {
+        return jdbcTemplate.query("SELECT * FROM todos WHERE user_name=? ORDER BY updated_at", todoRowMapper(), userName);
+    }
+
+    @Override
+    public List<TodoResponseDto> findAllTodosByUpdatedAt(String updatedAt) {
+        return jdbcTemplate.query("SELECT * FROM todos WHERE updated_at > ? ORDER BY updated_at", todoRowMapper(), updatedAt);
+    }
+
     private RowMapper<TodoResponseDto> todoRowMapper() {
         return new RowMapper<TodoResponseDto>() {
             @Override

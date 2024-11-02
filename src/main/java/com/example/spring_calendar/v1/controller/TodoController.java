@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/todos")
 public class TodoController {
@@ -27,5 +29,14 @@ public class TodoController {
     public ResponseEntity<TodoResponseDto> findTodoById(@PathVariable Long id) {
 
         return new ResponseEntity<>(todoService.findTodoById(id), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TodoResponseDto>> findAllTodos(
+            @RequestParam(defaultValue = "") String userName,
+            @RequestParam(defaultValue = "") String updatedAt
+    ) {
+
+        return new ResponseEntity<>(todoService.findAllTodos(userName, updatedAt), HttpStatus.OK);
     }
 }
