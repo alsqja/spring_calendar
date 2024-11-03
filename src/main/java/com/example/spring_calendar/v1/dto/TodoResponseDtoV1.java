@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class TodoResponseDto {
+public class TodoResponseDtoV1 {
     private Long id;
     private String user_name;
     private String title;

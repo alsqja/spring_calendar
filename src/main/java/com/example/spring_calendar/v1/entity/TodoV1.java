@@ -1,10 +1,10 @@
 package com.example.spring_calendar.v1.entity;
 
-import com.example.spring_calendar.v1.dto.TodoRequestDto;
+import com.example.spring_calendar.v1.dto.TodoRequestDtoV1;
 import lombok.Getter;
 
 @Getter
-public class Todo {
+public class TodoV1 {
     private Long id;
     private String user_name;
     private String password;
@@ -14,7 +14,7 @@ public class Todo {
     private String updated_at;
     private Long user_id;
 
-    public Todo(TodoRequestDto dto) {
+    public TodoV1(TodoRequestDtoV1 dto) {
         this.user_name = dto.getUserName();
         this.password = dto.getPassword();
         this.title = dto.getTitle();
@@ -24,7 +24,7 @@ public class Todo {
         this.user_id = 1L;
     }
 
-    public Todo(String password) {
+    public TodoV1(String password) {
         this.password = password;
     }
 }

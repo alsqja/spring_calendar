@@ -5,7 +5,6 @@ import com.example.spring_calendar.v2.dto.todo.TodoResponseDto;
 import com.example.spring_calendar.v2.entity.todo.Todo;
 import com.example.spring_calendar.v2.repository.todo.TodoRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,7 +16,7 @@ public class TodoServiceImpl implements TodoService {
 
     private final TodoRepository todoRepository;
 
-    public TodoServiceImpl(TodoRepository todoRepository, JdbcTemplate jdbcTemplate) {
+    public TodoServiceImpl(TodoRepository todoRepository) {
         this.todoRepository = todoRepository;
     }
 
@@ -26,6 +25,8 @@ public class TodoServiceImpl implements TodoService {
         if (dto.getUserId() == null || dto.getUserName() == null || dto.getTitle() == null || dto.getPassword() == null || dto.getContents() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "값을 정확하게 입력해주세요.");
         }
+
+        // TODO: 입력받은 userId에 해당하는 user 없을 시 throw (findUserById 구현 후 수정)
         Todo todo = new Todo(dto);
 
         return todoRepository.saveTodo(todo);

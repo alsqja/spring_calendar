@@ -1,11 +1,10 @@
 package com.example.spring_calendar.v1.service;
 
-import com.example.spring_calendar.v1.dto.TodoRequestDto;
-import com.example.spring_calendar.v1.dto.TodoResponseDto;
-import com.example.spring_calendar.v1.entity.Todo;
-import com.example.spring_calendar.v1.repository.TodoRepository;
+import com.example.spring_calendar.v1.dto.TodoRequestDtoV1;
+import com.example.spring_calendar.v1.dto.TodoResponseDtoV1;
+import com.example.spring_calendar.v1.entity.TodoV1;
+import com.example.spring_calendar.v1.repository.TodoRepositoryV1;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,32 +12,32 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
-public class TodoServiceImpl implements TodoService {
+public class TodoServiceImplV1 implements TodoServiceV1 {
 
-    private final TodoRepository todoRepository;
+    private final TodoRepositoryV1 todoRepository;
 
-    public TodoServiceImpl(TodoRepository todoRepository, JdbcTemplate jdbcTemplate) {
+    public TodoServiceImplV1(TodoRepositoryV1 todoRepository) {
         this.todoRepository = todoRepository;
     }
 
     @Override
-    public TodoResponseDto saveTodo(TodoRequestDto dto) {
+    public TodoResponseDtoV1 saveTodo(TodoRequestDtoV1 dto) {
         if (dto.getUserName() == null || dto.getTitle() == null || dto.getPassword() == null || dto.getContents() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "값을 정확하게 입력해주세요.");
         }
-        Todo todo = new Todo(dto);
+        TodoV1 todo = new TodoV1(dto);
 
         return todoRepository.saveTodo(todo);
     }
 
     @Override
-    public TodoResponseDto findTodoById(Long id) {
+    public TodoResponseDtoV1 findTodoById(Long id) {
 
         return todoRepository.findTodoByIdOrElseThrow(id);
     }
 
     @Override
-    public List<TodoResponseDto> findAllTodos(String userName, String updatedAt) {
+    public List<TodoResponseDtoV1> findAllTodos(String userName, String updatedAt) {
         if (userName.isEmpty() && updatedAt.isEmpty()) {
             return todoRepository.findAllTodos();
         }
@@ -53,9 +52,9 @@ public class TodoServiceImpl implements TodoService {
 
     @Transactional
     @Override
-    public TodoResponseDto updateTodo(Long id, TodoRequestDto dto) {
+    public TodoResponseDtoV1 updateTodo(Long id, TodoRequestDtoV1 dto) {
 
-        TodoResponseDto todo = todoRepository.findTodoByIdOrElseThrow(id);
+        TodoResponseDtoV1 todo = todoRepository.findTodoByIdOrElseThrow(id);
 
         if (!todoRepository.checkPassword(id, dto.getPassword())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "잘못된 비밀번호입니다.");

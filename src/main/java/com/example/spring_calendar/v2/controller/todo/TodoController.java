@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/todos")
+@RequestMapping("/v2/todos")
 public class TodoController {
 
     private final TodoService todoService;

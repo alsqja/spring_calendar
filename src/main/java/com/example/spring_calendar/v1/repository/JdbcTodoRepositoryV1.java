@@ -1,7 +1,7 @@
 package com.example.spring_calendar.v1.repository;
 
-import com.example.spring_calendar.v1.dto.TodoResponseDto;
-import com.example.spring_calendar.v1.entity.Todo;
+import com.example.spring_calendar.v1.dto.TodoResponseDtoV1;
+import com.example.spring_calendar.v1.entity.TodoV1;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -19,16 +19,16 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class JdbcTodoRepository implements TodoRepository {
+public class JdbcTodoRepositoryV1 implements TodoRepositoryV1 {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public JdbcTodoRepository(DataSource dataSource) {
+    public JdbcTodoRepositoryV1(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
-    public TodoResponseDto saveTodo(Todo todo) {
+    public TodoResponseDtoV1 saveTodo(TodoV1 todo) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("todos").usingGeneratedKeyColumns("id")
                 .usingColumns("title", "password", "contents", "user_name", "user_id");
@@ -46,29 +46,29 @@ public class JdbcTodoRepository implements TodoRepository {
     }
 
     @Override
-    public TodoResponseDto findTodoByIdOrElseThrow(Long id) {
-        List<TodoResponseDto> result = jdbcTemplate.query("select * from todos where id = ?", todoRowMapper(), id);
+    public TodoResponseDtoV1 findTodoByIdOrElseThrow(Long id) {
+        List<TodoResponseDtoV1> result = jdbcTemplate.query("select * from todos where id = ?", todoRowMapper(), id);
 
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 Todo가 없습니다."));
     }
 
     @Override
-    public List<TodoResponseDto> findAllTodos() {
+    public List<TodoResponseDtoV1> findAllTodos() {
         return jdbcTemplate.query("select * from todos ORDER BY updated_at DESC", todoRowMapper());
     }
 
     @Override
-    public List<TodoResponseDto> findAllTodosByUserNameAndUpdatedAt(String userName, String updatedAt) {
+    public List<TodoResponseDtoV1> findAllTodosByUserNameAndUpdatedAt(String userName, String updatedAt) {
         return jdbcTemplate.query("select * from todos WHERE user_name=? AND updated_at > ? ORDER BY updated_at DESC", todoRowMapper(), userName, updatedAt);
     }
 
     @Override
-    public List<TodoResponseDto> findAllTodosByUserName(String userName) {
+    public List<TodoResponseDtoV1> findAllTodosByUserName(String userName) {
         return jdbcTemplate.query("SELECT * FROM todos WHERE user_name=? ORDER BY updated_at DESC", todoRowMapper(), userName);
     }
 
     @Override
-    public List<TodoResponseDto> findAllTodosByUpdatedAt(String updatedAt) {
+    public List<TodoResponseDtoV1> findAllTodosByUpdatedAt(String updatedAt) {
         return jdbcTemplate.query("SELECT * FROM todos WHERE updated_at > ? ORDER BY updated_at DESC", todoRowMapper(), updatedAt);
     }
 
@@ -79,7 +79,7 @@ public class JdbcTodoRepository implements TodoRepository {
 
     @Override
     public boolean checkPassword(Long id, String password) {
-        Optional<Todo> todoPassword = jdbcTemplate.query("SELECT * FROM todos WHERE id = ?", todoRowMapperV2(), id).stream().findAny();
+        Optional<TodoV1> todoPassword = jdbcTemplate.query("SELECT * FROM todos WHERE id = ?", todoRowMapperV2(), id).stream().findAny();
 
         return todoPassword.get().getPassword().equals(password);
     }
@@ -89,11 +89,11 @@ public class JdbcTodoRepository implements TodoRepository {
         return jdbcTemplate.update("DELETE FROM todos WHERE id = ?", id);
     }
 
-    private RowMapper<TodoResponseDto> todoRowMapper() {
-        return new RowMapper<TodoResponseDto>() {
+    private RowMapper<TodoResponseDtoV1> todoRowMapper() {
+        return new RowMapper<TodoResponseDtoV1>() {
             @Override
-            public TodoResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new TodoResponseDto(
+            public TodoResponseDtoV1 mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new TodoResponseDtoV1(
                         rs.getLong("id"),
                         rs.getString("user_name"),
                         rs.getString("title"),
@@ -106,11 +106,11 @@ public class JdbcTodoRepository implements TodoRepository {
         };
     }
 
-    private RowMapper<Todo> todoRowMapperV2() {
-        return new RowMapper<Todo>() {
+    private RowMapper<TodoV1> todoRowMapperV2() {
+        return new RowMapper<TodoV1>() {
             @Override
-            public Todo mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new Todo(rs.getString("password"));
+            public TodoV1 mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new TodoV1(rs.getString("password"));
             }
         };
     }
