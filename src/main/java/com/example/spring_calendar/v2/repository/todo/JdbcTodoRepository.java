@@ -3,7 +3,7 @@ package com.example.spring_calendar.v2.repository.todo;
 import com.example.spring_calendar.v2.dto.todo.TodoResponseDto;
 import com.example.spring_calendar.v2.dto.todo.TodoResponseDtoWithUser;
 import com.example.spring_calendar.v2.dto.user.UserResponseDto;
-import com.example.spring_calendar.v2.entity.todo.Todo;
+import com.example.spring_calendar.v2.entity.todo.Todos;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -29,7 +29,7 @@ public class JdbcTodoRepository implements TodoRepository {
     }
 
     @Override
-    public TodoResponseDtoWithUser saveTodo(Todo todo) {
+    public TodoResponseDtoWithUser saveTodo(Todos todo) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("todos").usingGeneratedKeyColumns("id")
                 .usingColumns("title", "password", "contents", "user_name", "user_id");
@@ -54,8 +54,8 @@ public class JdbcTodoRepository implements TodoRepository {
     }
 
     @Override
-    public Todo findTodoByIdOrElseThrowIncludePassword(Long id) {
-        List<Todo> result = jdbcTemplate.query("select * from todos where id = ?", todoRowMapperV2(), id);
+    public Todos findTodoByIdOrElseThrowIncludePassword(Long id) {
+        List<Todos> result = jdbcTemplate.query("select * from todos where id = ?", todoRowMapperV2(), id);
 
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 Todo가 없습니다."));
     }
@@ -81,7 +81,7 @@ public class JdbcTodoRepository implements TodoRepository {
     }
 
     @Override
-    public int updateTodo(Todo todo) {
+    public int updateTodo(Todos todo) {
         return jdbcTemplate.update("UPDATE todos SET title = ?, contents = ?, user_name = ? WHERE id = ?", todo.getTitle(), todo.getContents(), todo.getUser_name(), todo.getId());
     }
 
@@ -107,11 +107,11 @@ public class JdbcTodoRepository implements TodoRepository {
         };
     }
 
-    private RowMapper<Todo> todoRowMapperV2() {
-        return new RowMapper<Todo>() {
+    private RowMapper<Todos> todoRowMapperV2() {
+        return new RowMapper<Todos>() {
             @Override
-            public Todo mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new Todo(
+            public Todos mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Todos(
                         rs.getLong("id"),
                         rs.getString("user_name"),
                         rs.getString("password"),
@@ -149,5 +149,4 @@ public class JdbcTodoRepository implements TodoRepository {
             );
         };
     }
-
 }

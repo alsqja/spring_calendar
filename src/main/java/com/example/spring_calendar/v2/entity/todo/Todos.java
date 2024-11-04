@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class Todo {
+public class Todos {
     private Long id;
     private String user_name;
     private String password;
@@ -16,14 +16,15 @@ public class Todo {
     private String updated_at;
     private Long user_id;
 
-    public Todo(TodoRequestDto dto) {
+    public Todos() {
+    }
+
+    public Todos(TodoRequestDto dto) {
         this.user_name = dto.getUserName();
         this.password = dto.getPassword();
         this.title = dto.getTitle();
         this.contents = dto.getContents();
-
-        //  v1 -> user 가 없어 user_id 하드코딩
-        this.user_id = 1L;
+        this.user_id = dto.getUserId();
     }
 
     public void patchByDto(Long id, TodoRequestDto dto) {

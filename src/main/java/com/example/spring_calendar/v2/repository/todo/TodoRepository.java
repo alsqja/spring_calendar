@@ -1,16 +1,16 @@
 package com.example.spring_calendar.v2.repository.todo;
 
 import com.example.spring_calendar.v2.dto.todo.TodoResponseDtoWithUser;
-import com.example.spring_calendar.v2.entity.todo.Todo;
+import com.example.spring_calendar.v2.entity.todo.Todos;
 
 import java.util.List;
 
 public interface TodoRepository {
-    TodoResponseDtoWithUser saveTodo(Todo todo);
+    TodoResponseDtoWithUser saveTodo(Todos todo);
 
     TodoResponseDtoWithUser findTodoByIdOrElseThrow(Long id);
 
-    Todo findTodoByIdOrElseThrowIncludePassword(Long id);
+    Todos findTodoByIdOrElseThrowIncludePassword(Long id);
 
     List<TodoResponseDtoWithUser> findAllTodos();
 
@@ -20,7 +20,7 @@ public interface TodoRepository {
 
     List<TodoResponseDtoWithUser> findAllTodosByUpdatedAt(String updatedAt);
 
-    int updateTodo(Todo todo);
+    int updateTodo(Todos todo);
 
     int deleteTodo(Long id);
 }

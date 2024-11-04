@@ -1,13 +1,16 @@
 package com.example.spring_calendar.v2.controller.todo;
 
 import com.example.spring_calendar.v2.dto.todo.TodoRequestDto;
+import com.example.spring_calendar.v2.dto.todo.TodoResponseDto;
 import com.example.spring_calendar.v2.dto.todo.TodoResponseDtoWithUser;
 import com.example.spring_calendar.v2.service.todo.TodoService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v2/todos")
@@ -32,12 +35,18 @@ public class TodoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TodoResponseDtoWithUser>> findAllTodos(
-            @RequestParam(defaultValue = "") String userName,
-            @RequestParam(defaultValue = "") String updatedAt
+    public ResponseEntity<Map<String, Object>> findAllTodos(
+            @RequestParam(defaultValue = "5") int offset,
+            @RequestParam(defaultValue = "1") int page
     ) {
+        Page<TodoResponseDto> todosPage = todoService.findAllTodos(page - 1, offset);
 
-        return new ResponseEntity<>(todoService.findAllTodos(userName, updatedAt), HttpStatus.OK);
+        Map<String, Object> response = new HashMap<>();
+        response.put("datas", todosPage.getContent());
+        response.put("totalCount", todosPage.getTotalElements());
+        response.put("totalPage", todosPage.getTotalPages());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
