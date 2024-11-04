@@ -65,6 +65,17 @@ public class JdbcUserRepository implements UserRepository {
                 .stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당되는 유저가 없습니다."));
     }
 
+    @Override
+    public User findUserByIdOrElseThrowIncludePassword(Long id) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE id = ?", userRowMapperIncludePassword(), id)
+                .stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당되는 유저가 없습니다."));
+    }
+
+    @Override
+    public int updateUser(User user) {
+        return jdbcTemplate.update("UPDATE users SET name = ?, email = ? WHERE id = ?", user.getName(), user.getEmail(), user.getId());
+    }
+
     private RowMapper<TodoResponseDto> todoRowMapper() {
         return (rs, rowNum) -> new TodoResponseDto(
                 rs.getLong("id"),
@@ -82,6 +93,17 @@ public class JdbcUserRepository implements UserRepository {
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getString("email"),
+                rs.getString("created_at"),
+                rs.getString("updated_at")
+        ));
+    }
+
+    private RowMapper<User> userRowMapperIncludePassword() {
+        return ((rs, rowNum) -> new User(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("email"),
+                rs.getString("password"),
                 rs.getString("created_at"),
                 rs.getString("updated_at")
         ));

@@ -16,4 +16,8 @@ public interface UserRepository {
     public List<UserResponseDto> findAllUser();
 
     public UserResponseDto login(String email, String password);
+
+    public User findUserByIdOrElseThrowIncludePassword(Long id);
+
+    public int updateUser(User user);
 }

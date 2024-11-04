@@ -44,4 +44,12 @@ public class UserController {
     public ResponseEntity<UserResponseDto> login(@RequestBody UserRequestDto dto) {
         return new ResponseEntity<>(userService.login(dto.getEmail(), dto.getPassword()), HttpStatus.CREATED);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserResponseDto> updateUser(
+            @PathVariable Long id,
+            @RequestBody UserRequestDto dto
+    ) {
+        return new ResponseEntity<>(userService.updateUser(id, dto), HttpStatus.OK);
+    }
 }

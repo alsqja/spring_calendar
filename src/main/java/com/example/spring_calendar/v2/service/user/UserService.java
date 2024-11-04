@@ -17,4 +17,6 @@ public interface UserService {
     public List<UserResponseDto> findAllUser();
 
     public UserResponseDto login(String email, String password);
+
+    public UserResponseDto updateUser(Long id, UserRequestDto dto);
 }

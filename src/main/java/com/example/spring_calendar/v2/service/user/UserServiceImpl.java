@@ -53,7 +53,22 @@ public class UserServiceImpl implements UserService {
         if (password == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호를 입력해주세요.");
         }
-        
+
         return userRepository.login(email, password);
+    }
+
+    @Override
+    public UserResponseDto updateUser(Long id, UserRequestDto dto) {
+        User user = userRepository.findUserByIdOrElseThrowIncludePassword(id);
+
+        if (!user.getPassword().equals(dto.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
+        }
+
+        user.patchUserByDto(id, dto);
+
+        userRepository.updateUser(user);
+
+        return userRepository.findUserByIdOrElseThrow(id);
     }
 }
