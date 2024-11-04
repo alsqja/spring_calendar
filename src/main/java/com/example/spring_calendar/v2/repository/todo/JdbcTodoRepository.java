@@ -48,37 +48,17 @@ public class JdbcTodoRepository implements TodoRepository {
 
     @Override
     public TodoResponseDto findTodoByIdOrElseThrow(Long id) {
-        List<TodoResponseDto> result = jdbcTemplate.query("select * from todos JOIN users ON users.id = todos.user_id where todos.id = ?", todoRowMapper(), id);
+        List<TodoResponseDto> result = jdbcTemplate.query("select * from todos where id = ?", todoRowMapper(), id);
 
-        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 Todo가 없습니다."));
+        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 일정입니다."));
     }
 
     @Override
     public Todos findTodoByIdOrElseThrowIncludePassword(Long id) {
         List<Todos> result = jdbcTemplate.query("select * from todos where id = ?", todoRowMapperV2(), id);
 
-        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 Todo가 없습니다."));
+        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 일정입니다."));
     }
-
-//    @Override
-//    public List<TodoResponseDtoWithUser> findAllTodos() {
-//        return jdbcTemplate.query("select * from todos JOIN users ON users.id = todos.user_id ORDER BY todos.updated_at DESC", todoWithUserRowMapper());
-//    }
-
-//    @Override
-//    public List<TodoResponseDto> findAllTodosByUserNameAndUpdatedAt(String userName, String updatedAt) {
-//        return jdbcTemplate.query("select * from todos JOIN users ON users.id = todos.user_id WHERE todos.user_name=? AND todos.updated_at > ? ORDER BY todos.updated_at DESC", todoRowMapper(), userName, updatedAt);
-//    }
-//
-//    @Override
-//    public List<TodoResponseDto> findAllTodosByUserName(String userName) {
-//        return jdbcTemplate.query("SELECT * FROM todos JOIN users ON users.id = todos.user_id WHERE todos.user_name=? ORDER BY todos.updated_at DESC", todoWithUserRowMapper(), userName);
-//    }
-//
-//    @Override
-//    public List<TodoResponseDtoWithUser> findAllTodosByUpdatedAt(String updatedAt) {
-//        return jdbcTemplate.query("SELECT * FROM todos JOIN users ON users.id = todos.user_id WHERE todos.updated_at > ? ORDER BY todos.updated_at DESC", todoWithUserRowMapper(), updatedAt);
-//    }
 
     @Override
     public int updateTodo(Todos todo) {
@@ -88,6 +68,13 @@ public class JdbcTodoRepository implements TodoRepository {
     @Override
     public int deleteTodo(Long id) {
         return jdbcTemplate.update("DELETE FROM todos WHERE id = ?", id);
+    }
+
+    @Override
+    public TodoResponseDtoWithUser getTodoWithUser(Long id) {
+        List<TodoResponseDtoWithUser> result = jdbcTemplate.query("select * from todos JOIN users ON users.id = todos.user_id where todos.id = ?", todoWithUserRowMapper(), id);
+
+        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 일정입니다."));
     }
 
     private RowMapper<TodoResponseDto> todoRowMapper() {

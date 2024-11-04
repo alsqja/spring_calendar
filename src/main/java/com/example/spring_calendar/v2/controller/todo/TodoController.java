@@ -2,6 +2,7 @@ package com.example.spring_calendar.v2.controller.todo;
 
 import com.example.spring_calendar.v2.dto.todo.TodoRequestDto;
 import com.example.spring_calendar.v2.dto.todo.TodoResponseDto;
+import com.example.spring_calendar.v2.dto.todo.TodoResponseDtoWithUser;
 import com.example.spring_calendar.v2.service.todo.TodoService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -64,5 +65,10 @@ public class TodoController {
     ) {
         todoService.deleteTodo(id, dto.getPassword());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{id}/join")
+    public ResponseEntity<TodoResponseDtoWithUser> getTodoWithUser(@PathVariable Long id) {
+        return new ResponseEntity<>(todoService.getTodoWithUser(id), HttpStatus.OK);
     }
 }
