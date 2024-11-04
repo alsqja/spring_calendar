@@ -2,7 +2,6 @@ package com.example.spring_calendar.v2.service.todo;
 
 import com.example.spring_calendar.v2.dto.todo.TodoRequestDto;
 import com.example.spring_calendar.v2.dto.todo.TodoResponseDto;
-import com.example.spring_calendar.v2.dto.todo.TodoResponseDtoWithUser;
 import com.example.spring_calendar.v2.entity.todo.Todos;
 import com.example.spring_calendar.v2.repository.todo.PageTodoRepo;
 import com.example.spring_calendar.v2.repository.todo.TodoRepository;
@@ -15,8 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @Service
 public class TodoServiceImpl implements TodoService {
@@ -48,7 +45,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public TodoResponseDtoWithUser saveTodo(TodoRequestDto dto) {
+    public TodoResponseDto saveTodo(TodoRequestDto dto) {
         if (dto.getUserId() == null || dto.getUserName() == null || dto.getTitle() == null || dto.getPassword() == null || dto.getContents() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "값을 정확하게 입력해주세요.");
         }
@@ -62,28 +59,28 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public TodoResponseDtoWithUser findTodoById(Long id) {
+    public TodoResponseDto findTodoById(Long id) {
 
         return todoRepository.findTodoByIdOrElseThrow(id);
     }
 
-    @Override
-    public List<TodoResponseDtoWithUser> findAllTodos(String userName, String updatedAt) {
-        if (userName.isEmpty() && updatedAt.isEmpty()) {
-            return todoRepository.findAllTodos();
-        }
-        if (!userName.isEmpty() && updatedAt.isEmpty()) {
-            return todoRepository.findAllTodosByUserName(userName);
-        }
-        if (userName.isEmpty() && !updatedAt.isEmpty()) {
-            return todoRepository.findAllTodosByUpdatedAt(updatedAt);
-        }
-        return todoRepository.findAllTodosByUserNameAndUpdatedAt(userName, updatedAt);
-    }
+//    @Override
+//    public List<TodoResponseDtoWithUser> findAllTodos(String userName, String updatedAt) {
+//        if (userName.isEmpty() && updatedAt.isEmpty()) {
+//            return todoRepository.findAllTodos();
+//        }
+//        if (!userName.isEmpty() && updatedAt.isEmpty()) {
+//            return todoRepository.findAllTodosByUserName(userName);
+//        }
+//        if (userName.isEmpty() && !updatedAt.isEmpty()) {
+//            return todoRepository.findAllTodosByUpdatedAt(updatedAt);
+//        }
+//        return todoRepository.findAllTodosByUserNameAndUpdatedAt(userName, updatedAt);
+//    }
 
     @Transactional
     @Override
-    public TodoResponseDtoWithUser updateTodo(Long id, TodoRequestDto dto) {
+    public TodoResponseDto updateTodo(Long id, TodoRequestDto dto) {
 
         Todos todo = todoRepository.findTodoByIdOrElseThrowIncludePassword(id);
 

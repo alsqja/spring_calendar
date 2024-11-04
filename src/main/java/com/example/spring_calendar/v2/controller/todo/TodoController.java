@@ -2,7 +2,6 @@ package com.example.spring_calendar.v2.controller.todo;
 
 import com.example.spring_calendar.v2.dto.todo.TodoRequestDto;
 import com.example.spring_calendar.v2.dto.todo.TodoResponseDto;
-import com.example.spring_calendar.v2.dto.todo.TodoResponseDtoWithUser;
 import com.example.spring_calendar.v2.service.todo.TodoService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -23,13 +22,13 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity<TodoResponseDtoWithUser> createTodo(@RequestBody TodoRequestDto dto) {
+    public ResponseEntity<TodoResponseDto> createTodo(@RequestBody TodoRequestDto dto) {
 
         return new ResponseEntity<>(todoService.saveTodo(dto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TodoResponseDtoWithUser> findTodoById(@PathVariable Long id) {
+    public ResponseEntity<TodoResponseDto> findTodoById(@PathVariable Long id) {
 
         return new ResponseEntity<>(todoService.findTodoById(id), HttpStatus.OK);
     }
@@ -50,7 +49,7 @@ public class TodoController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<TodoResponseDtoWithUser> updateTodo(
+    public ResponseEntity<TodoResponseDto> updateTodo(
             @PathVariable Long id,
             @RequestBody TodoRequestDto dto
     ) {

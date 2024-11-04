@@ -29,7 +29,7 @@ public class JdbcTodoRepository implements TodoRepository {
     }
 
     @Override
-    public TodoResponseDtoWithUser saveTodo(Todos todo) {
+    public TodoResponseDto saveTodo(Todos todo) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("todos").usingGeneratedKeyColumns("id")
                 .usingColumns("title", "password", "contents", "user_name", "user_id");
@@ -47,8 +47,8 @@ public class JdbcTodoRepository implements TodoRepository {
     }
 
     @Override
-    public TodoResponseDtoWithUser findTodoByIdOrElseThrow(Long id) {
-        List<TodoResponseDtoWithUser> result = jdbcTemplate.query("select * from todos JOIN users ON users.id = todos.user_id where todos.id = ?", todoWithUserRowMapper(), id);
+    public TodoResponseDto findTodoByIdOrElseThrow(Long id) {
+        List<TodoResponseDto> result = jdbcTemplate.query("select * from todos JOIN users ON users.id = todos.user_id where todos.id = ?", todoRowMapper(), id);
 
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 Todo가 없습니다."));
     }
@@ -60,25 +60,25 @@ public class JdbcTodoRepository implements TodoRepository {
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 Todo가 없습니다."));
     }
 
-    @Override
-    public List<TodoResponseDtoWithUser> findAllTodos() {
-        return jdbcTemplate.query("select * from todos JOIN users ON users.id = todos.user_id ORDER BY todos.updated_at DESC", todoWithUserRowMapper());
-    }
+//    @Override
+//    public List<TodoResponseDtoWithUser> findAllTodos() {
+//        return jdbcTemplate.query("select * from todos JOIN users ON users.id = todos.user_id ORDER BY todos.updated_at DESC", todoWithUserRowMapper());
+//    }
 
-    @Override
-    public List<TodoResponseDtoWithUser> findAllTodosByUserNameAndUpdatedAt(String userName, String updatedAt) {
-        return jdbcTemplate.query("select * from todos JOIN users ON users.id = todos.user_id WHERE todos.user_name=? AND todos.updated_at > ? ORDER BY todos.updated_at DESC", todoWithUserRowMapper(), userName, updatedAt);
-    }
-
-    @Override
-    public List<TodoResponseDtoWithUser> findAllTodosByUserName(String userName) {
-        return jdbcTemplate.query("SELECT * FROM todos JOIN users ON users.id = todos.user_id WHERE todos.user_name=? ORDER BY todos.updated_at DESC", todoWithUserRowMapper(), userName);
-    }
-
-    @Override
-    public List<TodoResponseDtoWithUser> findAllTodosByUpdatedAt(String updatedAt) {
-        return jdbcTemplate.query("SELECT * FROM todos JOIN users ON users.id = todos.user_id WHERE todos.updated_at > ? ORDER BY todos.updated_at DESC", todoWithUserRowMapper(), updatedAt);
-    }
+//    @Override
+//    public List<TodoResponseDto> findAllTodosByUserNameAndUpdatedAt(String userName, String updatedAt) {
+//        return jdbcTemplate.query("select * from todos JOIN users ON users.id = todos.user_id WHERE todos.user_name=? AND todos.updated_at > ? ORDER BY todos.updated_at DESC", todoRowMapper(), userName, updatedAt);
+//    }
+//
+//    @Override
+//    public List<TodoResponseDto> findAllTodosByUserName(String userName) {
+//        return jdbcTemplate.query("SELECT * FROM todos JOIN users ON users.id = todos.user_id WHERE todos.user_name=? ORDER BY todos.updated_at DESC", todoWithUserRowMapper(), userName);
+//    }
+//
+//    @Override
+//    public List<TodoResponseDtoWithUser> findAllTodosByUpdatedAt(String updatedAt) {
+//        return jdbcTemplate.query("SELECT * FROM todos JOIN users ON users.id = todos.user_id WHERE todos.updated_at > ? ORDER BY todos.updated_at DESC", todoWithUserRowMapper(), updatedAt);
+//    }
 
     @Override
     public int updateTodo(Todos todo) {
