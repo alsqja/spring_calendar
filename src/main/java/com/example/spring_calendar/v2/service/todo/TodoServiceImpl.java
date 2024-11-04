@@ -1,9 +1,10 @@
 package com.example.spring_calendar.v2.service.todo;
 
 import com.example.spring_calendar.v2.dto.todo.TodoRequestDto;
-import com.example.spring_calendar.v2.dto.todo.TodoResponseDto;
+import com.example.spring_calendar.v2.dto.todo.TodoResponseDtoWithUser;
 import com.example.spring_calendar.v2.entity.todo.Todo;
 import com.example.spring_calendar.v2.repository.todo.TodoRepository;
+import com.example.spring_calendar.v2.repository.user.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,31 +16,35 @@ import java.util.List;
 public class TodoServiceImpl implements TodoService {
 
     private final TodoRepository todoRepository;
+    private final UserRepository userRepository;
 
-    public TodoServiceImpl(TodoRepository todoRepository) {
+    public TodoServiceImpl(TodoRepository todoRepository, UserRepository userRepository) {
         this.todoRepository = todoRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public TodoResponseDto saveTodo(TodoRequestDto dto) {
+    public TodoResponseDtoWithUser saveTodo(TodoRequestDto dto) {
         if (dto.getUserId() == null || dto.getUserName() == null || dto.getTitle() == null || dto.getPassword() == null || dto.getContents() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "값을 정확하게 입력해주세요.");
         }
 
-        // TODO: 입력받은 userId에 해당하는 user 없을 시 throw (findUserById 구현 후 수정)
+        // userId에 해당하는 user 없을 시 throw
+        userRepository.findUserByIdOrElseThrow(dto.getUserId());
+
         Todo todo = new Todo(dto);
 
         return todoRepository.saveTodo(todo);
     }
 
     @Override
-    public TodoResponseDto findTodoById(Long id) {
+    public TodoResponseDtoWithUser findTodoById(Long id) {
 
         return todoRepository.findTodoByIdOrElseThrow(id);
     }
 
     @Override
-    public List<TodoResponseDto> findAllTodos(String userName, String updatedAt) {
+    public List<TodoResponseDtoWithUser> findAllTodos(String userName, String updatedAt) {
         if (userName.isEmpty() && updatedAt.isEmpty()) {
             return todoRepository.findAllTodos();
         }
@@ -54,7 +59,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Transactional
     @Override
-    public TodoResponseDto updateTodo(Long id, TodoRequestDto dto) {
+    public TodoResponseDtoWithUser updateTodo(Long id, TodoRequestDto dto) {
 
         Todo todo = todoRepository.findTodoByIdOrElseThrowIncludePassword(id);
 

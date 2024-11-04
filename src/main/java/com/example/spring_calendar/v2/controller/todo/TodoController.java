@@ -1,7 +1,7 @@
 package com.example.spring_calendar.v2.controller.todo;
 
 import com.example.spring_calendar.v2.dto.todo.TodoRequestDto;
-import com.example.spring_calendar.v2.dto.todo.TodoResponseDto;
+import com.example.spring_calendar.v2.dto.todo.TodoResponseDtoWithUser;
 import com.example.spring_calendar.v2.service.todo.TodoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,19 +20,19 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity<TodoResponseDto> createTodo(@RequestBody TodoRequestDto dto) {
+    public ResponseEntity<TodoResponseDtoWithUser> createTodo(@RequestBody TodoRequestDto dto) {
 
         return new ResponseEntity<>(todoService.saveTodo(dto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TodoResponseDto> findTodoById(@PathVariable Long id) {
+    public ResponseEntity<TodoResponseDtoWithUser> findTodoById(@PathVariable Long id) {
 
         return new ResponseEntity<>(todoService.findTodoById(id), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<TodoResponseDto>> findAllTodos(
+    public ResponseEntity<List<TodoResponseDtoWithUser>> findAllTodos(
             @RequestParam(defaultValue = "") String userName,
             @RequestParam(defaultValue = "") String updatedAt
     ) {
@@ -41,7 +41,7 @@ public class TodoController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<TodoResponseDto> updateTodo(
+    public ResponseEntity<TodoResponseDtoWithUser> updateTodo(
             @PathVariable Long id,
             @RequestBody TodoRequestDto dto
     ) {

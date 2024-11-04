@@ -1,6 +1,8 @@
 package com.example.spring_calendar.v2.repository.todo;
 
 import com.example.spring_calendar.v2.dto.todo.TodoResponseDto;
+import com.example.spring_calendar.v2.dto.todo.TodoResponseDtoWithUser;
+import com.example.spring_calendar.v2.dto.user.UserResponseDto;
 import com.example.spring_calendar.v2.entity.todo.Todo;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -27,7 +29,7 @@ public class JdbcTodoRepository implements TodoRepository {
     }
 
     @Override
-    public TodoResponseDto saveTodo(Todo todo) {
+    public TodoResponseDtoWithUser saveTodo(Todo todo) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("todos").usingGeneratedKeyColumns("id")
                 .usingColumns("title", "password", "contents", "user_name", "user_id");
@@ -45,8 +47,8 @@ public class JdbcTodoRepository implements TodoRepository {
     }
 
     @Override
-    public TodoResponseDto findTodoByIdOrElseThrow(Long id) {
-        List<TodoResponseDto> result = jdbcTemplate.query("select * from todos where id = ?", todoRowMapper(), id);
+    public TodoResponseDtoWithUser findTodoByIdOrElseThrow(Long id) {
+        List<TodoResponseDtoWithUser> result = jdbcTemplate.query("select * from todos JOIN users ON users.id = todos.user_id where todos.id = ?", todoWithUserRowMapper(), id);
 
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 Todo가 없습니다."));
     }
@@ -59,23 +61,23 @@ public class JdbcTodoRepository implements TodoRepository {
     }
 
     @Override
-    public List<TodoResponseDto> findAllTodos() {
-        return jdbcTemplate.query("select * from todos ORDER BY updated_at DESC", todoRowMapper());
+    public List<TodoResponseDtoWithUser> findAllTodos() {
+        return jdbcTemplate.query("select * from todos JOIN users ON users.id = todos.user_id ORDER BY todos.updated_at DESC", todoWithUserRowMapper());
     }
 
     @Override
-    public List<TodoResponseDto> findAllTodosByUserNameAndUpdatedAt(String userName, String updatedAt) {
-        return jdbcTemplate.query("select * from todos WHERE user_name=? AND updated_at > ? ORDER BY updated_at DESC", todoRowMapper(), userName, updatedAt);
+    public List<TodoResponseDtoWithUser> findAllTodosByUserNameAndUpdatedAt(String userName, String updatedAt) {
+        return jdbcTemplate.query("select * from todos JOIN users ON users.id = todos.user_id WHERE todos.user_name=? AND todos.updated_at > ? ORDER BY todos.updated_at DESC", todoWithUserRowMapper(), userName, updatedAt);
     }
 
     @Override
-    public List<TodoResponseDto> findAllTodosByUserName(String userName) {
-        return jdbcTemplate.query("SELECT * FROM todos WHERE user_name=? ORDER BY updated_at DESC", todoRowMapper(), userName);
+    public List<TodoResponseDtoWithUser> findAllTodosByUserName(String userName) {
+        return jdbcTemplate.query("SELECT * FROM todos JOIN users ON users.id = todos.user_id WHERE todos.user_name=? ORDER BY todos.updated_at DESC", todoWithUserRowMapper(), userName);
     }
 
     @Override
-    public List<TodoResponseDto> findAllTodosByUpdatedAt(String updatedAt) {
-        return jdbcTemplate.query("SELECT * FROM todos WHERE updated_at > ? ORDER BY updated_at DESC", todoRowMapper(), updatedAt);
+    public List<TodoResponseDtoWithUser> findAllTodosByUpdatedAt(String updatedAt) {
+        return jdbcTemplate.query("SELECT * FROM todos JOIN users ON users.id = todos.user_id WHERE todos.updated_at > ? ORDER BY todos.updated_at DESC", todoWithUserRowMapper(), updatedAt);
     }
 
     @Override
@@ -122,4 +124,30 @@ public class JdbcTodoRepository implements TodoRepository {
             }
         };
     }
+
+    private RowMapper<TodoResponseDtoWithUser> todoWithUserRowMapper() {
+        return (rs, rowNum) -> {
+            // UserResponseDto 생성
+            UserResponseDto user = new UserResponseDto(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getString("email"),
+                    rs.getString("created_at"),
+                    rs.getString("updated_at")
+            );
+
+            // TodoResponseDto 생성, UserResponseDto를 포함시킴
+            return new TodoResponseDtoWithUser(
+                    rs.getLong("id"),
+                    rs.getString("user_name"),
+                    rs.getString("title"),
+                    rs.getString("contents"),
+                    rs.getString("created_at"),
+                    rs.getString("updated_at"),
+                    rs.getLong("user_id"),
+                    user
+            );
+        };
+    }
+
 }
