@@ -37,4 +37,9 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto findUserById(Long id) {
         return userRepository.findUserByIdOrElseThrow(id);
     }
+
+    @Override
+    public List<UserResponseDto> findAllUser() {
+        return userRepository.findAllUser();
+    }
 }

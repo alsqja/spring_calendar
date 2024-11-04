@@ -13,4 +13,6 @@ public interface UserService {
     public List<TodoResponseDto> getAllUserTodo(Long id);
 
     public UserResponseDto findUserById(Long id);
+
+    public List<UserResponseDto> findAllUser();
 }

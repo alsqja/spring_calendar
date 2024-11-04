@@ -53,6 +53,11 @@ public class JdbcUserRepository implements UserRepository {
         return jdbcTemplate.query("SELECT * FROM users WHERE id = ?", userRowMapper(), id).stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당되는 유저가 없습니다."));
     }
 
+    @Override
+    public List<UserResponseDto> findAllUser() {
+        return jdbcTemplate.query("SELECT * FROM users", userRowMapper());
+    }
+
     private RowMapper<TodoResponseDto> todoRowMapper() {
         return (rs, rowNum) -> new TodoResponseDto(
                 rs.getLong("id"),

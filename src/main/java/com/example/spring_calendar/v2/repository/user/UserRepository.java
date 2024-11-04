@@ -12,4 +12,6 @@ public interface UserRepository {
     public List<TodoResponseDto> getAllUserTodo(Long id);
 
     public UserResponseDto findUserByIdOrElseThrow(Long id);
+
+    public List<UserResponseDto> findAllUser();
 }
