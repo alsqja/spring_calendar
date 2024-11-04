@@ -29,4 +29,9 @@ public class UserController {
     public ResponseEntity<List<TodoResponseDto>> getAllUserTodos(@PathVariable Long id) {
         return new ResponseEntity<>(userService.getAllUserTodo(id), HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDto> findUserById(@PathVariable Long id) {
+        return new ResponseEntity<>(userService.findUserById(id), HttpStatus.OK);
+    }
 }

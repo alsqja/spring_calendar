@@ -32,4 +32,9 @@ public class UserServiceImpl implements UserService {
         // TODO: user_id 검증
         return userRepository.getAllUserTodo(id);
     }
+
+    @Override
+    public UserResponseDto findUserById(Long id) {
+        return userRepository.findUserByIdOrElseThrow(id);
+    }
 }

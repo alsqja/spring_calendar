@@ -3,11 +3,13 @@ package com.example.spring_calendar.v2.repository.user;
 import com.example.spring_calendar.v2.dto.todo.TodoResponseDto;
 import com.example.spring_calendar.v2.dto.user.UserResponseDto;
 import com.example.spring_calendar.v2.entity.user.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -46,6 +48,11 @@ public class JdbcUserRepository implements UserRepository {
         return jdbcTemplate.query("SELECT * FROM todos WHERE user_id = ?", todoRowMapper(), id);
     }
 
+    @Override
+    public UserResponseDto findUserByIdOrElseThrow(Long id) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE id = ?", userRowMapper(), id).stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당되는 유저가 없습니다."));
+    }
+
     private RowMapper<TodoResponseDto> todoRowMapper() {
         return (rs, rowNum) -> new TodoResponseDto(
                 rs.getLong("id"),
@@ -56,5 +63,15 @@ public class JdbcUserRepository implements UserRepository {
                 rs.getString("updated_at"),
                 rs.getLong("user_id")
         );
+    }
+
+    private RowMapper<UserResponseDto> userRowMapper() {
+        return ((rs, rowNum) -> new UserResponseDto(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("email"),
+                rs.getString("created_at"),
+                rs.getString("updated_at")
+        ));
     }
 }

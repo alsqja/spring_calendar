@@ -10,4 +10,6 @@ public interface UserRepository {
     public UserResponseDto saveUser(User dto);
 
     public List<TodoResponseDto> getAllUserTodo(Long id);
+
+    public UserResponseDto findUserByIdOrElseThrow(Long id);
 }

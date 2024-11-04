@@ -11,4 +11,6 @@ public interface UserService {
     public UserResponseDto saveUser(UserRequestDto dto);
 
     public List<TodoResponseDto> getAllUserTodo(Long id);
+
+    public UserResponseDto findUserById(Long id);
 }
