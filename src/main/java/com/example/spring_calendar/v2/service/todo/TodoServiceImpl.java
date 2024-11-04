@@ -56,28 +56,27 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public TodoResponseDto updateTodo(Long id, TodoRequestDto dto) {
 
-        TodoResponseDto todo = todoRepository.findTodoByIdOrElseThrow(id);
+        Todo todo = todoRepository.findTodoByIdOrElseThrowIncludePassword(id);
 
-        if (!todoRepository.checkPassword(id, dto.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "잘못된 비밀번호입니다.");
+        if (!todo.getPassword().equals(dto.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
         }
 
-        todoRepository.updateTodo(
-                id,
-                dto.getTitle() == null ? todo.getTitle() : dto.getTitle(),
-                dto.getContents() == null ? todo.getContents() : dto.getContents(),
-                dto.getUserName() == null ? todo.getUser_name() : dto.getUserName()
-        );
+        todo.patchByDto(id, dto);
+
+        todoRepository.updateTodo(todo);
 
         return todoRepository.findTodoByIdOrElseThrow(id);
     }
 
     @Override
-    public void deleteTodo(Long id) {
-        int deletedRow = todoRepository.deleteTodo(id);
+    public void deleteTodo(Long id, String password) {
+        Todo todo = todoRepository.findTodoByIdOrElseThrowIncludePassword(id);
 
-        if (deletedRow == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 일정입니다.");
+        if (!todo.getPassword().equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
         }
+
+        todoRepository.deleteTodo(id);
     }
 }

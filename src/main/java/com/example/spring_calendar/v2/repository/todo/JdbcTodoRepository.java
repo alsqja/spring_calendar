@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Repository
 public class JdbcTodoRepository implements TodoRepository {
@@ -53,6 +52,13 @@ public class JdbcTodoRepository implements TodoRepository {
     }
 
     @Override
+    public Todo findTodoByIdOrElseThrowIncludePassword(Long id) {
+        List<Todo> result = jdbcTemplate.query("select * from todos where id = ?", todoRowMapperV2(), id);
+
+        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 Todo가 없습니다."));
+    }
+
+    @Override
     public List<TodoResponseDto> findAllTodos() {
         return jdbcTemplate.query("select * from todos ORDER BY updated_at DESC", todoRowMapper());
     }
@@ -73,15 +79,8 @@ public class JdbcTodoRepository implements TodoRepository {
     }
 
     @Override
-    public int updateTodo(Long id, String title, String contents, String userName) {
-        return jdbcTemplate.update("UPDATE todos SET title = ?, contents = ?, user_name = ? WHERE id = ?", title, contents, userName, id);
-    }
-
-    @Override
-    public boolean checkPassword(Long id, String password) {
-        Optional<Todo> todoPassword = jdbcTemplate.query("SELECT * FROM todos WHERE id = ?", todoRowMapperV2(), id).stream().findAny();
-
-        return todoPassword.get().getPassword().equals(password);
+    public int updateTodo(Todo todo) {
+        return jdbcTemplate.update("UPDATE todos SET title = ?, contents = ?, user_name = ? WHERE id = ?", todo.getTitle(), todo.getContents(), todo.getUser_name(), todo.getId());
     }
 
     @Override
@@ -110,7 +109,16 @@ public class JdbcTodoRepository implements TodoRepository {
         return new RowMapper<Todo>() {
             @Override
             public Todo mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new Todo(rs.getString("password"));
+                return new Todo(
+                        rs.getLong("id"),
+                        rs.getString("user_name"),
+                        rs.getString("password"),
+                        rs.getString("title"),
+                        rs.getString("contents"),
+                        rs.getString("created_at"),
+                        rs.getString("updated_at"),
+                        rs.getLong("user_id")
+                );
             }
         };
     }
