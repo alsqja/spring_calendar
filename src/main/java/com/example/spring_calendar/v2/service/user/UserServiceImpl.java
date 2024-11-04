@@ -7,6 +7,7 @@ import com.example.spring_calendar.v2.entity.user.User;
 import com.example.spring_calendar.v2.repository.user.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -20,18 +21,30 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     @Override
     public UserResponseDto saveUser(UserRequestDto dto) {
 
+        if (dto.getPassword() == null || dto.getName() == null || dto.getEmail() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "아이디, 이메일, 비밀번호를 모두 입력해주세요.");
+        }
+
+        if (userRepository.findExistingEmail(dto.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이메일은 중복될 수 없습니다.");
+        }
+
         User user = new User(dto);
 
-        //  TODO: 중복 email throw 처리
         return userRepository.saveUser(user);
     }
 
+    @Transactional
     @Override
     public List<TodoResponseDto> getAllUserTodo(Long id) {
-        // TODO: user_id 검증
+
+        //  user_id 검증
+        findUserById(id);
+
         return userRepository.getAllUserTodo(id);
     }
 
@@ -57,6 +70,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.login(email, password);
     }
 
+    @Transactional
     @Override
     public UserResponseDto updateUser(Long id, UserRequestDto dto) {
         User user = userRepository.findUserByIdOrElseThrowIncludePassword(id);
@@ -72,6 +86,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findUserByIdOrElseThrow(id);
     }
 
+    @Transactional
     @Override
     public void deleteUser(Long id, String password) {
         User user = userRepository.findUserByIdOrElseThrowIncludePassword(id);

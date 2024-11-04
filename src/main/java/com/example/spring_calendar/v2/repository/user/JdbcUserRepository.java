@@ -40,7 +40,7 @@ public class JdbcUserRepository implements UserRepository {
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
         //  TODO: findUserById 구현 후 대체
-        return new UserResponseDto(key.longValue(), user.getName(), user.getEmail(), null, null);
+        return findUserByIdOrElseThrow(key.longValue());
     }
 
     @Override
@@ -74,6 +74,13 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public int updateUser(User user) {
         return jdbcTemplate.update("UPDATE users SET name = ?, email = ? WHERE id = ?", user.getName(), user.getEmail(), user.getId());
+    }
+
+    @Override
+    public boolean findExistingEmail(String email) {
+        List<UserResponseDto> user = jdbcTemplate.query("SELECT * FROM users WHERE email = ?", userRowMapper(), email);
+
+        return !user.isEmpty();
     }
 
     @Override

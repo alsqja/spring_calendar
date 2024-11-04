@@ -22,4 +22,6 @@ public interface UserRepository {
     public int updateUser(User user);
 
     public int deleteUser(Long id);
+
+    public boolean findExistingEmail(String email);
 }
