@@ -39,4 +39,9 @@ public class UserController {
     public ResponseEntity<List<UserResponseDto>> findAllUser() {
         return new ResponseEntity<>(userService.findAllUser(), HttpStatus.OK);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserResponseDto> login(@RequestBody UserRequestDto dto) {
+        return new ResponseEntity<>(userService.login(dto.getEmail(), dto.getPassword()), HttpStatus.CREATED);
+    }
 }

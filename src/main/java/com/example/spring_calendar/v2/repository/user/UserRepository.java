@@ -14,4 +14,6 @@ public interface UserRepository {
     public UserResponseDto findUserByIdOrElseThrow(Long id);
 
     public List<UserResponseDto> findAllUser();
+
+    public UserResponseDto login(String email, String password);
 }

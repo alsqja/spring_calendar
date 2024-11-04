@@ -50,12 +50,19 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public UserResponseDto findUserByIdOrElseThrow(Long id) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE id = ?", userRowMapper(), id).stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당되는 유저가 없습니다."));
+        return jdbcTemplate.query("SELECT * FROM users WHERE id = ?", userRowMapper(), id)
+                .stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당되는 유저가 없습니다."));
     }
 
     @Override
     public List<UserResponseDto> findAllUser() {
         return jdbcTemplate.query("SELECT * FROM users", userRowMapper());
+    }
+
+    @Override
+    public UserResponseDto login(String email, String password) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE email = ? AND password = ?", userRowMapper(), email, password)
+                .stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당되는 유저가 없습니다."));
     }
 
     private RowMapper<TodoResponseDto> todoRowMapper() {

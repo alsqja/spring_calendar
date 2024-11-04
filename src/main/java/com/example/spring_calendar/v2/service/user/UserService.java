@@ -15,4 +15,6 @@ public interface UserService {
     public UserResponseDto findUserById(Long id);
 
     public List<UserResponseDto> findAllUser();
+
+    public UserResponseDto login(String email, String password);
 }

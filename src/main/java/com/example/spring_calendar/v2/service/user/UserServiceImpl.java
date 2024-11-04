@@ -5,7 +5,9 @@ import com.example.spring_calendar.v2.dto.user.UserRequestDto;
 import com.example.spring_calendar.v2.dto.user.UserResponseDto;
 import com.example.spring_calendar.v2.entity.user.User;
 import com.example.spring_calendar.v2.repository.user.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -41,5 +43,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponseDto> findAllUser() {
         return userRepository.findAllUser();
+    }
+
+    @Override
+    public UserResponseDto login(String email, String password) {
+        if (email == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이메일을 입력해주세요.");
+        }
+        if (password == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호를 입력해주세요.");
+        }
+        
+        return userRepository.login(email, password);
     }
 }
