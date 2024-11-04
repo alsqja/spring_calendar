@@ -1,14 +1,14 @@
 package com.example.spring_calendar.v2.controller.user;
 
+import com.example.spring_calendar.v2.dto.todo.TodoResponseDto;
 import com.example.spring_calendar.v2.dto.user.UserRequestDto;
 import com.example.spring_calendar.v2.dto.user.UserResponseDto;
 import com.example.spring_calendar.v2.service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v2/users")
@@ -23,5 +23,10 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserResponseDto> saveUser(@RequestBody UserRequestDto dto) {
         return new ResponseEntity<>(userService.saveUser(dto), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}/todos")
+    public ResponseEntity<List<TodoResponseDto>> getAllUserTodos(@PathVariable Long id) {
+        return new ResponseEntity<>(userService.getAllUserTodo(id), HttpStatus.OK);
     }
 }
