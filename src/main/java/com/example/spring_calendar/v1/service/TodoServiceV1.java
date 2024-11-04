@@ -14,5 +14,5 @@ public interface TodoServiceV1 {
 
     TodoResponseDtoV1 updateTodo(Long id, TodoRequestDtoV1 dto);
 
-    void deleteTodo(Long id);
+    void deleteTodo(Long id, String password);
 }

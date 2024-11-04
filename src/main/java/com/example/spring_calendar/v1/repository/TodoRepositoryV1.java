@@ -10,6 +10,8 @@ public interface TodoRepositoryV1 {
 
     TodoResponseDtoV1 findTodoByIdOrElseThrow(Long id);
 
+    TodoV1 findTodoByIdOrElseThrowIncludePassword(Long id);
+
     List<TodoResponseDtoV1> findAllTodos();
 
     List<TodoResponseDtoV1> findAllTodosByUserNameAndUpdatedAt(String userName, String updatedAt);
@@ -19,8 +21,6 @@ public interface TodoRepositoryV1 {
     List<TodoResponseDtoV1> findAllTodosByUpdatedAt(String updatedAt);
 
     int updateTodo(Long id, String title, String contents, String userName);
-
-    boolean checkPassword(Long id, String password);
 
     int deleteTodo(Long id);
 }

@@ -50,8 +50,11 @@ public class TodoControllerV1 {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
-        todoService.deleteTodo(id);
+    public ResponseEntity<Void> deleteTodo(
+            @PathVariable Long id,
+            @RequestBody TodoRequestDtoV1 dto
+    ) {
+        todoService.deleteTodo(id, dto.getPassword());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

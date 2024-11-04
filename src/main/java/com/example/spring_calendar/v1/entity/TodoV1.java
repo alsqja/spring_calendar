@@ -1,9 +1,11 @@
 package com.example.spring_calendar.v1.entity;
 
 import com.example.spring_calendar.v1.dto.TodoRequestDtoV1;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class TodoV1 {
     private Long id;
     private String user_name;
@@ -22,9 +24,5 @@ public class TodoV1 {
 
         //  v1 -> user 가 없어 user_id 하드코딩
         this.user_id = 1L;
-    }
-
-    public TodoV1(String password) {
-        this.password = password;
     }
 }

@@ -54,10 +54,10 @@ public class TodoServiceImplV1 implements TodoServiceV1 {
     @Override
     public TodoResponseDtoV1 updateTodo(Long id, TodoRequestDtoV1 dto) {
 
-        TodoResponseDtoV1 todo = todoRepository.findTodoByIdOrElseThrow(id);
+        TodoV1 todo = todoRepository.findTodoByIdOrElseThrowIncludePassword(id);
 
-        if (!todoRepository.checkPassword(id, dto.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "잘못된 비밀번호입니다.");
+        if (!todo.getPassword().equals(dto.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
         }
 
         todoRepository.updateTodo(
@@ -70,12 +70,15 @@ public class TodoServiceImplV1 implements TodoServiceV1 {
         return todoRepository.findTodoByIdOrElseThrow(id);
     }
 
+    @Transactional
     @Override
-    public void deleteTodo(Long id) {
-        int deletedRow = todoRepository.deleteTodo(id);
+    public void deleteTodo(Long id, String password) {
+        TodoV1 todo = todoRepository.findTodoByIdOrElseThrowIncludePassword(id);
 
-        if (deletedRow == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 일정입니다.");
+        if (!todo.getPassword().equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
         }
+
+        todoRepository.deleteTodo(id);
     }
 }
