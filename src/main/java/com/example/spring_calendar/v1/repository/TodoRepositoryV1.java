@@ -20,7 +20,7 @@ public interface TodoRepositoryV1 {
 
     List<TodoResponseDtoV1> findAllTodosByUpdatedAt(String updatedAt);
 
-    int updateTodo(Long id, String title, String contents, String userName);
+    int updateTodo(TodoV1 todo);
 
     int deleteTodo(Long id);
 }

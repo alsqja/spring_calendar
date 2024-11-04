@@ -25,4 +25,17 @@ public class TodoV1 {
         //  v1 -> user 가 없어 user_id 하드코딩
         this.user_id = 1L;
     }
+
+    public void patchByDto(Long id, TodoRequestDtoV1 dto) {
+        this.id = id;
+        if (dto.getUserName() != null) {
+            this.user_name = dto.getUserName();
+        }
+        if (dto.getTitle() != null) {
+            this.title = dto.getTitle();
+        }
+        if (dto.getContents() != null) {
+            this.contents = dto.getContents();
+        }
+    }
 }

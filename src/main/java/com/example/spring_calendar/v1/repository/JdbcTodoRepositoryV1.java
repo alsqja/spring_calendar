@@ -79,8 +79,8 @@ public class JdbcTodoRepositoryV1 implements TodoRepositoryV1 {
     }
 
     @Override
-    public int updateTodo(Long id, String title, String contents, String userName) {
-        return jdbcTemplate.update("UPDATE todos SET title = ?, contents = ?, user_name = ? WHERE id = ?", title, contents, userName, id);
+    public int updateTodo(TodoV1 todo) {
+        return jdbcTemplate.update("UPDATE todos SET title = ?, contents = ?, user_name = ? WHERE id = ?", todo.getTitle(), todo.getContents(), todo.getUser_name(), todo.getId());
     }
 
     @Override

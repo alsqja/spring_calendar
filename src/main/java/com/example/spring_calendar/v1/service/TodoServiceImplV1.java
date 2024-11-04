@@ -60,12 +60,9 @@ public class TodoServiceImplV1 implements TodoServiceV1 {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
         }
 
-        todoRepository.updateTodo(
-                id,
-                dto.getTitle() == null ? todo.getTitle() : dto.getTitle(),
-                dto.getContents() == null ? todo.getContents() : dto.getContents(),
-                dto.getUserName() == null ? todo.getUser_name() : dto.getUserName()
-        );
+        todo.patchByDto(id, dto);
+
+        todoRepository.updateTodo(todo);
 
         return todoRepository.findTodoByIdOrElseThrow(id);
     }
