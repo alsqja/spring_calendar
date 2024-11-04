@@ -19,4 +19,6 @@ public interface UserService {
     public UserResponseDto login(String email, String password);
 
     public UserResponseDto updateUser(Long id, UserRequestDto dto);
+
+    public void deleteUser(Long id, String password);
 }

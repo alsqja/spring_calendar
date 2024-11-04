@@ -20,4 +20,6 @@ public interface UserRepository {
     public User findUserByIdOrElseThrowIncludePassword(Long id);
 
     public int updateUser(User user);
+
+    public int deleteUser(Long id);
 }

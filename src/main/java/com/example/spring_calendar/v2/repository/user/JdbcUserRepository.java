@@ -76,6 +76,11 @@ public class JdbcUserRepository implements UserRepository {
         return jdbcTemplate.update("UPDATE users SET name = ?, email = ? WHERE id = ?", user.getName(), user.getEmail(), user.getId());
     }
 
+    @Override
+    public int deleteUser(Long id) {
+        return jdbcTemplate.update("DELETE FROM users WHERE id = ?", id);
+    }
+
     private RowMapper<TodoResponseDto> todoRowMapper() {
         return (rs, rowNum) -> new TodoResponseDto(
                 rs.getLong("id"),

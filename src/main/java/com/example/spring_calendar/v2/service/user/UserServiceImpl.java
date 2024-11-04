@@ -71,4 +71,15 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findUserByIdOrElseThrow(id);
     }
+
+    @Override
+    public void deleteUser(Long id, String password) {
+        User user = userRepository.findUserByIdOrElseThrowIncludePassword(id);
+
+        if (!user.getPassword().equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
+        }
+
+        userRepository.deleteUser(id);
+    }
 }

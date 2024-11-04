@@ -52,4 +52,15 @@ public class UserController {
     ) {
         return new ResponseEntity<>(userService.updateUser(id, dto), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(
+            @PathVariable Long id,
+            @RequestBody UserRequestDto dto
+    ) {
+
+        userService.deleteUser(id, dto.getPassword());
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
