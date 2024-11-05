@@ -1,5 +1,6 @@
 package com.example.spring_calendar.v2.service.todo;
 
+import com.example.spring_calendar.v2.dto.todo.CreateTodoReqDto;
 import com.example.spring_calendar.v2.dto.todo.TodoRequestDto;
 import com.example.spring_calendar.v2.dto.todo.TodoResponseDto;
 import com.example.spring_calendar.v2.dto.todo.TodoResponseDtoWithUser;
@@ -51,11 +52,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public TodoResponseDto saveTodo(TodoRequestDto dto) {
-        if (dto.getUserId() == null || dto.getUserName() == null || dto.getTitle() == null || dto.getPassword() == null || dto.getContents() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "값을 정확하게 입력해주세요.");
-        }
-
+    public TodoResponseDto saveTodo(CreateTodoReqDto dto) {
         // userId에 해당하는 user 없을 시 throw
         userRepository.findUserByIdOrElseThrow(dto.getUserId());
 
@@ -69,20 +66,6 @@ public class TodoServiceImpl implements TodoService {
 
         return todoRepository.findTodoByIdOrElseThrow(id);
     }
-
-//    @Override
-//    public List<TodoResponseDtoWithUser> findAllTodos(String userName, String updatedAt) {
-//        if (userName.isEmpty() && updatedAt.isEmpty()) {
-//            return todoRepository.findAllTodos();
-//        }
-//        if (!userName.isEmpty() && updatedAt.isEmpty()) {
-//            return todoRepository.findAllTodosByUserName(userName);
-//        }
-//        if (userName.isEmpty() && !updatedAt.isEmpty()) {
-//            return todoRepository.findAllTodosByUpdatedAt(updatedAt);
-//        }
-//        return todoRepository.findAllTodosByUserNameAndUpdatedAt(userName, updatedAt);
-//    }
 
     @Transactional
     @Override

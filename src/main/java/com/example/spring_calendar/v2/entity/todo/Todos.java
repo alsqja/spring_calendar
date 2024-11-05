@@ -1,5 +1,6 @@
 package com.example.spring_calendar.v2.entity.todo;
 
+import com.example.spring_calendar.v2.dto.todo.CreateTodoReqDto;
 import com.example.spring_calendar.v2.dto.todo.TodoRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,14 @@ public class Todos {
     }
 
     public Todos(TodoRequestDto dto) {
+        this.user_name = dto.getUserName();
+        this.password = dto.getPassword();
+        this.title = dto.getTitle();
+        this.contents = dto.getContents();
+        this.user_id = dto.getUserId();
+    }
+
+    public Todos(CreateTodoReqDto dto) {
         this.user_name = dto.getUserName();
         this.password = dto.getPassword();
         this.title = dto.getTitle();
