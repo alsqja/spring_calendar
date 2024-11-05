@@ -91,6 +91,6 @@
     - [x]  작성자의 `이메일` 정보가 형식에 맞는지 확인
 
 # Trouble Shooting
-[페이지네이션 트러블슈팅](https://velog.io/@alsqja2626/Trouble-Shooting-Spring-JDBC-%ED%8E%98%EC%9D%B4%EC%A7%80%EB%84%A4%EC%9D%B4%EC%85%98)
-[리팩토링 트러불슈팅](https://velog.io/@alsqja2626/Trouble-Shooting-%ED%9A%A8%EC%9C%A8%EA%B3%BC-%EA%B0%80%EB%8F%85%EC%84%B1%EC%9D%84-%EC%9C%84%ED%95%9C-%EB%A6%AC%ED%8E%99%ED%86%A0%EB%A7%81)
-[Bean Conflict 트러블 슈팅](https://velog.io/@alsqja2626/TroubleShooting-ConflictingBeanDefinitionException-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
+- [페이지네이션 트러블슈팅](https://velog.io/@alsqja2626/Trouble-Shooting-Spring-JDBC-%ED%8E%98%EC%9D%B4%EC%A7%80%EB%84%A4%EC%9D%B4%EC%85%98)
+- [리팩토링 트러불슈팅](https://velog.io/@alsqja2626/Trouble-Shooting-%ED%9A%A8%EC%9C%A8%EA%B3%BC-%EA%B0%80%EB%8F%85%EC%84%B1%EC%9D%84-%EC%9C%84%ED%95%9C-%EB%A6%AC%ED%8E%99%ED%86%A0%EB%A7%81)
+- [Bean Conflict 트러블 슈팅](https://velog.io/@alsqja2626/TroubleShooting-ConflictingBeanDefinitionException-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
