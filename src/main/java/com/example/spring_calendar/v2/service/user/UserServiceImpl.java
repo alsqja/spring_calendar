@@ -1,6 +1,7 @@
 package com.example.spring_calendar.v2.service.user;
 
 import com.example.spring_calendar.v2.dto.todo.TodoResponseDto;
+import com.example.spring_calendar.v2.dto.user.CreateUserReqDto;
 import com.example.spring_calendar.v2.dto.user.UserRequestDto;
 import com.example.spring_calendar.v2.dto.user.UserResponseDto;
 import com.example.spring_calendar.v2.entity.user.User;
@@ -23,12 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserResponseDto saveUser(UserRequestDto dto) {
-
-        if (dto.getPassword() == null || dto.getName() == null || dto.getEmail() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "아이디, 이메일, 비밀번호를 모두 입력해주세요.");
-        }
-
+    public UserResponseDto saveUser(CreateUserReqDto dto) {
         if (userRepository.findExistingEmail(dto.getEmail())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이메일은 중복될 수 없습니다.");
         }

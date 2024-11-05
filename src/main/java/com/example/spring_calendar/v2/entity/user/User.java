@@ -1,5 +1,6 @@
 package com.example.spring_calendar.v2.entity.user;
 
+import com.example.spring_calendar.v2.dto.user.CreateUserReqDto;
 import com.example.spring_calendar.v2.dto.user.UserRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,12 @@ public class User {
     private String updated_at;
 
     public User(UserRequestDto dto) {
+        this.name = dto.getName();
+        this.password = dto.getPassword();
+        this.email = dto.getEmail();
+    }
+
+    public User(CreateUserReqDto dto) {
         this.name = dto.getName();
         this.password = dto.getPassword();
         this.email = dto.getEmail();
