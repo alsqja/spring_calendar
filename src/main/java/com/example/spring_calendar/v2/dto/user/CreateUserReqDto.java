@@ -15,4 +15,11 @@ public class CreateUserReqDto {
     @NotNull(message = "이메일을 입력하세요")
     @Email(message = "이메일 형식으로 입력하세요")
     private String email;
+
+
+    public CreateUserReqDto(String name, String email, String password) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+    }
 }
