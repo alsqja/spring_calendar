@@ -37,12 +37,12 @@ public class TodoServiceImpl implements TodoService {
 
         return todosPage.map(todo -> new TodoResponseDto(
                 todo.getId(),
-                todo.getUser_name(),
+                todo.getUserName(),
                 todo.getTitle(),
                 todo.getContents(),
-                todo.getCreated_at(),
-                todo.getUpdated_at(),
-                todo.getUser_id()
+                todo.getCreatedAt(),
+                todo.getUpdatedAt(),
+                todo.getUserId()
         ));
     }
 
@@ -51,6 +51,7 @@ public class TodoServiceImpl implements TodoService {
         return todoRepository.getTodoWithUser(id);
     }
 
+    @Transactional
     @Override
     public TodoResponseDto saveTodo(CreateTodoReqDto dto) {
         // userId에 해당하는 user 없을 시 throw
@@ -81,7 +82,8 @@ public class TodoServiceImpl implements TodoService {
 
         todoRepository.updateTodo(todo);
 
-        return todoRepository.findTodoByIdOrElseThrow(id);
+        //  data를 db 에서 받아와 리턴하는 방식 -> 입력 데이터와 LocalDateTime.now() 를 통해 조회 없이 timestamp 전달
+        return new TodoResponseDto(todo);
     }
 
     @Override

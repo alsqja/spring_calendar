@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.saveUser(user);
     }
 
-    @Transactional
+    //  SELECT 요청만 2개 -> transactional 필요 x
     @Override
     public List<TodoResponseDto> getAllUserTodo(Long id) {
 
@@ -79,7 +79,8 @@ public class UserServiceImpl implements UserService {
 
         userRepository.updateUser(user);
 
-        return userRepository.findUserByIdOrElseThrow(id);
+        //  data를 db 에서 받아와 리턴하는 방식 -> 입력 데이터와 LocalDateTime.now() 를 통해 조회 없이 timestamp 전달
+        return new UserResponseDto(user);
     }
 
     @Transactional

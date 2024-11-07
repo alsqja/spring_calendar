@@ -5,6 +5,8 @@ import com.example.spring_calendar.v2.dto.user.UserRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @AllArgsConstructor
 public class User {
@@ -12,8 +14,8 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private String created_at;
-    private String updated_at;
+    private String createdAt;
+    private String updatedAt;
 
     public User(UserRequestDto dto) {
         this.name = dto.getName();
@@ -35,5 +37,8 @@ public class User {
         if (dto.getEmail() != null) {
             this.email = dto.getEmail();
         }
+
+        // updated_at 처리(db 읽어오는 횟수 down)
+        this.updatedAt = LocalDateTime.now().toString();
     }
 }

@@ -8,11 +8,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public class TodoResponseDtoWithUser {
     private Long id;
-    private String user_name;
+    private String userName;
     private String title;
     private String contents;
-    private String created_at;
-    private String updated_at;
-    private Long user_id;
+    private String createdAt;
+    private String updatedAt;
+    private Long userId;
     private UserResponseDto user;
 }
