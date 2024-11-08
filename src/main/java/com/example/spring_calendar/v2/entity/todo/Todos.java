@@ -10,20 +10,21 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class Todos {
+    //  PagingAndSortingRepository 사용을 위해 snake_case 사용
     private Long id;
-    private String userName;
+    private String user_name;
     private String password;
     private String title;
     private String contents;
-    private String createdAt;
-    private String updatedAt;
+    private String created_at;
+    private String updated_at;
     private Long userId;
 
     public Todos() {
     }
 
     public Todos(TodoRequestDto dto) {
-        this.userName = dto.getUserName();
+        this.user_name = dto.getUserName();
         this.password = dto.getPassword();
         this.title = dto.getTitle();
         this.contents = dto.getContents();
@@ -31,7 +32,7 @@ public class Todos {
     }
 
     public Todos(CreateTodoReqDto dto) {
-        this.userName = dto.getUserName();
+        this.user_name = dto.getUserName();
         this.password = dto.getPassword();
         this.title = dto.getTitle();
         this.contents = dto.getContents();
@@ -41,7 +42,7 @@ public class Todos {
     public void patchByDto(Long id, TodoRequestDto dto) {
         this.id = id;
         if (dto.getUserName() != null) {
-            this.userName = dto.getUserName();
+            this.user_name = dto.getUserName();
         }
         if (dto.getTitle() != null) {
             this.title = dto.getTitle();
@@ -50,6 +51,6 @@ public class Todos {
             this.contents = dto.getContents();
         }
 
-        this.updatedAt = LocalDateTime.now().toString();
+        this.updated_at = LocalDateTime.now().toString();
     }
 }

@@ -17,11 +17,11 @@ public class TodoResponseDto {
 
     public TodoResponseDto(Todos todos) {
         this.id = todos.getId();
-        this.userName = todos.getUserName();
+        this.userName = todos.getUser_name();
         this.title = todos.getTitle();
         this.contents = todos.getContents();
-        this.createdAt = todos.getCreatedAt();
-        this.updatedAt = todos.getUpdatedAt();
+        this.createdAt = todos.getCreated_at();
+        this.updatedAt = todos.getUpdated_at();
         this.userId = todos.getUserId();
     }
 }

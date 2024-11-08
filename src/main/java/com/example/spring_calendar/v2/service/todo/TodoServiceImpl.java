@@ -37,11 +37,11 @@ public class TodoServiceImpl implements TodoService {
 
         return todosPage.map(todo -> new TodoResponseDto(
                 todo.getId(),
-                todo.getUserName(),
+                todo.getUser_name(),
                 todo.getTitle(),
                 todo.getContents(),
-                todo.getCreatedAt(),
-                todo.getUpdatedAt(),
+                todo.getCreated_at(),
+                todo.getUpdated_at(),
                 todo.getUserId()
         ));
     }

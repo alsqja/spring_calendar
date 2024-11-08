@@ -37,7 +37,7 @@ public class JdbcTodoRepository implements TodoRepository {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("title", todo.getTitle());
         parameters.put("contents", todo.getContents());
-        parameters.put("user_name", todo.getUserName());
+        parameters.put("user_name", todo.getUser_name());
         parameters.put("password", todo.getPassword());
         parameters.put("user_id", todo.getUserId());
 
@@ -62,7 +62,7 @@ public class JdbcTodoRepository implements TodoRepository {
 
     @Override
     public int updateTodo(Todos todo) {
-        return jdbcTemplate.update("UPDATE todos SET title = ?, contents = ?, user_name = ? WHERE id = ?", todo.getTitle(), todo.getContents(), todo.getUserName(), todo.getId());
+        return jdbcTemplate.update("UPDATE todos SET title = ?, contents = ?, user_name = ? WHERE id = ?", todo.getTitle(), todo.getContents(), todo.getUser_name(), todo.getId());
     }
 
     @Override
