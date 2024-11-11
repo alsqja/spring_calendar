@@ -9,8 +9,6 @@ import com.example.spring_calendar.v2.service.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -35,10 +32,8 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponseDto> saveUser(
-            @Valid @RequestBody CreateUserReqDto dto,
-            BindingResult bindingResult
+            @Valid @RequestBody CreateUserReqDto dto
     ) {
-        validHandler(bindingResult);
 
         return new ResponseEntity<>(userService.saveUser(dto), HttpStatus.CREATED);
     }
@@ -60,21 +55,17 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<UserResponseDto> login(
-            @Valid @RequestBody LoginReqDto dto,
-            BindingResult bindingResult
+            @Valid @RequestBody LoginReqDto dto
     ) {
-        validHandler(bindingResult);
-        
+
         return new ResponseEntity<>(userService.login(dto.getEmail(), dto.getPassword()), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long id,
-            @Valid @RequestBody UserRequestDto dto,
-            BindingResult bindingResult
+            @Valid @RequestBody UserRequestDto dto
     ) {
-        validHandler(bindingResult);
 
         return new ResponseEntity<>(userService.updateUser(id, dto), HttpStatus.OK);
     }
@@ -82,22 +73,11 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(
             @PathVariable Long id,
-            @Valid @RequestBody UserRequestDto dto,
-            BindingResult bindingResult
+            @Valid @RequestBody UserRequestDto dto
     ) {
-        validHandler(bindingResult);
 
         userService.deleteUser(id, dto.getPassword());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    private void validHandler(BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<FieldError> list = bindingResult.getFieldErrors();
-            for (FieldError err : list) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, err.getDefaultMessage());
-            }
-        }
     }
 }

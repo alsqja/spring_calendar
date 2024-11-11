@@ -9,8 +9,6 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,10 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -37,8 +33,7 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity<TodoResponseDto> createTodo(@Valid @RequestBody CreateTodoReqDto dto, BindingResult bindingResult) {
-        validHandler(bindingResult);
+    public ResponseEntity<TodoResponseDto> createTodo(@Valid @RequestBody CreateTodoReqDto dto) {
 
         return new ResponseEntity<>(todoService.saveTodo(dto), HttpStatus.CREATED);
     }
@@ -69,10 +64,8 @@ public class TodoController {
     @PatchMapping("/{id}")
     public ResponseEntity<TodoResponseDto> updateTodo(
             @PathVariable Long id,
-            @Valid @RequestBody TodoRequestDto dto,
-            BindingResult bindingResult
+            @Valid @RequestBody TodoRequestDto dto
     ) {
-        validHandler(bindingResult);
 
         return new ResponseEntity<>(todoService.updateTodo(id, dto), HttpStatus.OK);
     }
@@ -80,11 +73,9 @@ public class TodoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTodo(
             @PathVariable Long id,
-            @Valid @RequestBody TodoRequestDto dto,
-            BindingResult bindingResult
+            @Valid @RequestBody TodoRequestDto dto
     ) {
-        validHandler(bindingResult);
-        
+
         todoService.deleteTodo(id, dto.getPassword());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -92,14 +83,5 @@ public class TodoController {
     @GetMapping("/{id}/join")
     public ResponseEntity<TodoResponseDtoWithUser> getTodoWithUser(@PathVariable Long id) {
         return new ResponseEntity<>(todoService.getTodoWithUser(id), HttpStatus.OK);
-    }
-
-    private static void validHandler(BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<FieldError> list = bindingResult.getFieldErrors();
-            for (FieldError err : list) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, err.getDefaultMessage());
-            }
-        }
     }
 }
